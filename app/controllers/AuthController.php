@@ -1,25 +1,19 @@
 <?php
 namespace App\controllers;
 
-use App\QueryBuilder;
 use League\Plates\Engine;
 use Delight\Auth\Auth;
-use PDO;
-use Carbon\Carbon;
+
 
 class AuthController {
   
 	private $templates;
 	private $auth;
-	private $qb;
-	private $carbon;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon)
+	public function __construct(Engine $engine, Auth $auth)
 	{
 	$this->templates = $engine;
 	$this->auth = $auth;
-	$this->qb = $qb;
-	$this->carbon = $carbon;
 	}
 	
 	public function loginForm()

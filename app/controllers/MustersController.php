@@ -3,24 +3,17 @@ namespace App\controllers;
 
 use App\QueryBuilder;
 use League\Plates\Engine;
-use Delight\Auth\Auth;
-use PDO;
 use Carbon\Carbon;
 
 class MustersController
 {
-	
 	private $templates;
-	private $auth;
 	private $qb;
-	private $carbon;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon)
+	public function __construct(QueryBuilder $qb, Engine $engine)
 	{
 		$this->templates = $engine;
-		$this->auth = $auth;
 		$this->qb = $qb;
-		$this->carbon = $carbon;
 	}
 	
 	public function getMusters()
@@ -29,6 +22,7 @@ class MustersController
 		$devices = $this->qb->getAll('devices');
 		$objects = $this->qb->getAll('objects');
 		
+		//Подсчет колличества поверок для каждого объекта
 		foreach ($objects as &$object) {
 			$object['quantity_of_musters'] = 0;
 			foreach ($musters as $muster) {
@@ -38,9 +32,13 @@ class MustersController
 			}
 		}
 		
+		//с помощью карбон расчитывается дата следующей поверки
+		//  (last_date + interval_of_musters)
 		foreach ($musters as &$muster) {
 			$lastDate = Carbon::parse($muster['last_date']);
 			$nextDate = $lastDate->addYears($muster['interval_of_muster']);
+			//is_overlooked - содержит css класс отображающий просроченные поверки
+			// или поверки, которые будут просрочены в течение месяца
 			$muster['is_overlooked'] = ($nextDate < Carbon::now()) ? 'overlooked' : '';
 			$muster['is_overlooked_in_month'] =
 				($nextDate >= Carbon::now()

@@ -3,23 +3,17 @@ namespace App\controllers;
 
 use App\QueryBuilder;
 use League\Plates\Engine;
-use Delight\Auth\Auth;
-use PDO;
 use Carbon\Carbon;
 
 class ObjectsController {
 	
 	private $templates;
-	private $auth;
 	private $qb;
-	private $carbon;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon)
+	public function __construct(QueryBuilder $qb, Engine $engine)
 	{
-	$this->templates = $engine;
-	$this->auth = $auth;
-	$this->qb = $qb;
-	$this->carbon = $carbon;
+		$this->qb = $qb;
+		$this->templates = $engine;
 	}
 	
 	public function getObjects()
