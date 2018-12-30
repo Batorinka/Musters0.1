@@ -8,6 +8,7 @@ use PDO;
 use Carbon\Carbon;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use App\AppConfig;
 
 class MailController {
   
@@ -15,21 +16,23 @@ class MailController {
 	private $auth;
 	private $qb;
 	private $carbon;
+	private $appConfig;
 	private $mail;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon, PHPMailer $mail)
+	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon, AppConfig $appConfig, PHPMailer $mail)
 	{
-	$this->templates = $engine;
-	$this->auth = $auth;
-	$this->qb = $qb;
-	$this->carbon = $carbon;
-	$this->mail = $mail;
+		$this->templates = $engine;
+		$this->auth = $auth;
+		$this->qb = $qb;
+		$this->carbon = $carbon;
+		$this->appConfig = $appConfig;
+		$this->mail = $mail;
 	}
 	
 	public function sendMail()
 	{
 		$musters = $this->qb->getAll('musters');
-		$config = include("configMail.php");
+		$config = $this->appConfig->mail();
 		try {
 			//Server settings
 			$this->mail->SMTPDebug = 2;

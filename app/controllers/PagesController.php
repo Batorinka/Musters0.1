@@ -6,6 +6,7 @@ use League\Plates\Engine;
 use Delight\Auth\Auth;
 use PDO;
 use Carbon\Carbon;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class PagesController {
   
@@ -56,6 +57,14 @@ class PagesController {
 	
 	public function test()
 	{
+		phpinfo();die;
+		
+		$templateProcessor = new TemplateProcessor('Template.docx');
+		$templateProcessor->setValue('name', 'John Doe');
+		$templateProcessor->setValue(array('city', 'street'), array('Detroit', '12th Street'));
+		$templateProcessor->saveAs('Result.docx');
+		
+		die;
 		$tests = $this->qb->getAll('test');
 		echo $this->templates->render('test', [
 			'tests' => $tests

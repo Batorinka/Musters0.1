@@ -8,8 +8,12 @@ use Delight\Auth\Auth;
 use League\Plates\Engine;
 use Aura\SqlQuery\QueryFactory;
 use Carbon\Carbon;
+use App\AppConfig;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PhpOffice\PhpWord\PhpWord;
+
+
 
 $containerBuilder = new ContainerBuilder;
 $containerBuilder->addDefinitions([
@@ -17,14 +21,13 @@ $containerBuilder->addDefinitions([
 	return new PHPMailer(true);
   },
   PDO::class => function() {
-    $driver = 'mysql';
-    $host = 'mysql';
-    $database_name = 'app';
-    $charset = 'utf8';
-    $username = 'root';
-    $password = 'secret';
+    $appConfig = new AppConfig;
+    $config = $appConfig->db();
 
-    return new PDO("$driver:host=$host;dbname=$database_name;charset=$charset;", $username, $password);
+    return new PDO("{$config['driver']}:host={$config['host']};
+                            dbname={$config['database_name']};
+                            charset={$config['charset']};",
+	                        $config['username'], $config['password']);
   },
   Engine::class => function() {
     return new Engine("../app/views");
