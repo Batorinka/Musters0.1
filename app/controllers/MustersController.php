@@ -26,8 +26,17 @@ class MustersController
 	public function getMusters()
 	{
 		$musters = $this->qb->getAll('musters');
-		$objects = $this->qb->getAll('objects');
 		$devices = $this->qb->getAll('devices');
+		$objects = $this->qb->getAll('objects');
+		
+		foreach ($objects as &$object) {
+			$object['quantity_of_musters'] = 0;
+			foreach ($musters as $muster) {
+				if ($object['id'] == $muster['object_id']) {
+					$object['quantity_of_musters'] += 1;
+				}
+			}
+		}
 		
 		foreach ($musters as &$muster) {
 			$lastDate = Carbon::parse($muster['last_date']);
@@ -57,10 +66,6 @@ class MustersController
 	
 	public function addMuster()
 	{
-		$object = $this->qb->getOne($_POST['object_id'], 'objects');
-		$this->qb->update([
-			'quantity_of_musters' => $object['quantity_of_musters'] + 1
-		], $_POST['object_id'], 'objects');
 		$this->qb->insert([
 			'object_id' => $_POST['object_id'],
 			'device_id' => $_POST['device_id'],
@@ -68,6 +73,7 @@ class MustersController
 			'last_date' => $_POST['last_date'],
 			'interval_of_muster' => $_POST['interval_of_muster']
 		], 'musters');
+		
 		flash()->success('Добавлена новая поверка');
 		header('Location: /');
 	}
@@ -87,17 +93,6 @@ class MustersController
 	
 	public function updateMuster($vars)
 	{
-		$muster = $this->qb->getOne($vars['id'], 'musters');
-		$object = $this->qb->getOne($muster['object_id'], 'objects');
-		$this->qb->update([
-			'quantity_of_musters' => $object['quantity_of_musters'] - 1
-		], $muster['object_id'], 'objects');
-		
-		$object = $this->qb->getOne($_POST['object_id'], 'objects');
-		$this->qb->update([
-			'quantity_of_musters' => $object['quantity_of_musters'] + 1
-		], $_POST['object_id'], 'objects');
-		
 		$this->qb->update([
 			'object_id' => $_POST['object_id'],
 			'device_id' => $_POST['device_id'],
@@ -105,18 +100,15 @@ class MustersController
 			'last_date' => $_POST['last_date'],
 			'interval_of_muster' => $_POST['interval_of_muster']
 		], $vars['id'], 'musters');
+		
 		flash()->success("Поверка отредактирована");
 		header('Location: /');
 	}
 	
 	public function deleteMuster($vars)
 	{
-		$muster = $this->qb->getOne($vars['id'], 'musters');
-		$object = $this->qb->getOne($muster['object_id'], 'objects');
-		$this->qb->update([
-			'quantity_of_musters' => $object['quantity_of_musters'] - 1
-		], $muster['object_id'], 'objects');
 		$this->qb->delete($vars['id'], 'musters');
+		
 		flash()->success("Поверка удалена");
 		header('Location: /');
 	}
