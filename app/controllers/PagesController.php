@@ -4,7 +4,8 @@ namespace App\controllers;
 use App\QueryBuilder;
 use League\Plates\Engine;
 use Carbon\Carbon;
-use PhpOffice\PhpWord\TemplateProcessor;
+use PHPStamp\Document\WordDocument;
+use PHPStamp\Templator;
 
 class PagesController {
 	
@@ -51,24 +52,56 @@ class PagesController {
 	
 	public function test()
 	{
-		phpinfo();die;
+		$musters = $this->qb->getAll('musters');
+		$objects = $this->qb->getAll('objects');
+		$devices = $this->qb->getAll('devices');
+		$overlookedMusters = [];
+		foreach ($musters as &$muster) {
+			$lastDate = Carbon::parse($muster['last_date']);
+			$nextDate = $lastDate->addYears($muster['interval_of_muster']);
+			$muster['is_overlooked'] = ($nextDate < Carbon::now()) ? 'overlooked' : '';
+			$muster['is_overlooked_in_month'] =
+				($nextDate >= Carbon::now()
+					and $nextDate < Carbon::now()->addMonth()) ? 'overlooked_in_month' : '';
+			$muster['next_date'] = $nextDate->format('Y-m-d');
+			if ($nextDate < Carbon::now()->addMonth()) {
+				array_push($overlookedMusters, $muster);
+			}
+		}
+//		d($overlookedMusters);die();
+		$cachePath = 'cache/';
+		$templator = new Templator($cachePath); // опционально можно задать свой формат скобочек
+		// Для того чтобы каждый раз шаблон генерировался заново:
+		// $templator->debug = true;
 		
-		$templateProcessor = new TemplateProcessor('Template.docx');
-		$templateProcessor->setValue('name', 'John Doe');
-		$templateProcessor->setValue(array('city', 'street'), array('Detroit', '12th Street'));
-		$templateProcessor->saveAs('Result.docx');
+		$templator->trackDocument = true;
+		$documentPath = 'Template.docx';
+		$document = new WordDocument($documentPath);
 		
-		die;
-		$tests = $this->qb->getAll('test');
-		echo $this->templates->render('test', [
-			'tests' => $tests
-		]);
+		$values = array(
+			'library' => 'PHPStamp 0.1',
+			'simpleValue' => 'I am simple value',
+			'nested' => array(
+				'firstValue' => 'First child value',
+				'secondValue' => 'Second child value'
+			),
+			'header' => 'test of a table row',
+			'students' => array(
+				array('id' => 1, 'name' => 'Student 1', 'mark' => '10'),
+				array('id' => 2, 'name' => 'Student 2', 'mark' => '4'),
+				array('id' => 3, 'name' => 'Student 3', 'mark' => '7')
+			),
+			'maxMark' => 10,
+			'todo' => array(
+				'TODO 1',
+				'TODO 2',
+				'TODO 3'
+			),
+			'over' => $overlookedMusters
+		);
+		$result = $templator->render($document, $values);
+		$result->download('Акт проверки.docx');
+
 	}
 	
-	public function testAjax() {
-		$this->qb->insert([
-			'title' => $_POST['title'],
-			'name' => $_POST['name']
-		], 'test');
-	}
 }
