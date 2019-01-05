@@ -49,7 +49,7 @@ class DevicesController {
 		$device = $this->qb->getOne($vars['id'], 'devices');
 		$musters = $this->qb->getAllWhere('device_id', $vars['id'],'musters');
 		$objects = $this->qb->getAll('objects');
-		$type = $this->qb->getAllWhere('id', $device['type_id'],'types');
+		$type = $this->qb->getOneWhere('id', $device['type_id'],'types');
 		
 		foreach ($musters as &$muster) {
 			$muster = $this->helper->addCSSClassAndNextDate($muster);
@@ -59,7 +59,7 @@ class DevicesController {
 			'device' => $device,
 			'musters' => $musters,
 			'objects' => $objects,
-			'type' => $type['0']
+			'type' => $type
 		]);
 	}
 	

@@ -11,6 +11,7 @@ class PagesController {
 	
 	private $qb;
 	private $templates;
+	private $auth;
 	
 	public function __construct(QueryBuilder $qb, Engine $engine)
 	{
@@ -25,23 +26,29 @@ class PagesController {
 	
 	public function test()
 	{
-		$musters = $this->qb->getAll('musters');
-		$objects = $this->qb->getAll('objects');
+		$object_id = 30;
+		$object = $this->qb->getOne($object_id, 'objects');
+		$musters = $this->qb->getAllWhere('object_id', $object_id, 'musters');
 		$devices = $this->qb->getAll('devices');
-		$overlookedMusters = [];
+		$types = $this->qb->getAll('types');
+		$curator['email'] = $_SESSION['auth_email'];
+		
 		foreach ($musters as &$muster) {
 			$lastDate = Carbon::parse($muster['last_date']);
 			$nextDate = $lastDate->addYears($muster['interval_of_muster']);
-			$muster['is_overlooked'] = ($nextDate < Carbon::now()) ? 'overlooked' : '';
-			$muster['is_overlooked_in_month'] =
-				($nextDate >= Carbon::now()
-					and $nextDate < Carbon::now()->addMonth()) ? 'overlooked_in_month' : '';
 			$muster['next_date'] = $nextDate->format('Y-m-d');
-			if ($nextDate < Carbon::now()->addMonth()) {
-				array_push($overlookedMusters, $muster);
+			foreach ($devices as $device) {
+				if ($device['id'] == $muster['device_id']) {
+					$muster['device'] = $device['name'];
+					foreach ($types as $type) {
+						if ($type['id'] == $device['type_id']) {
+							$muster['type'] = $type['name'];
+						}
+					}
+				}
 			}
 		}
-//		d($overlookedMusters);die();
+		
 		$cachePath = 'cache/';
 		$templator = new Templator($cachePath); // опционально можно задать свой формат скобочек
 		// Для того чтобы каждый раз шаблон генерировался заново:
@@ -52,29 +59,14 @@ class PagesController {
 		$document = new WordDocument($documentPath);
 		
 		$values = array(
-			'library' => 'PHPStamp 0.1',
-			'simpleValue' => 'I am simple value',
-			'nested' => array(
-				'firstValue' => 'First child value',
-				'secondValue' => 'Second child value'
-			),
-			'header' => 'test of a table row',
-			'students' => array(
-				array('id' => 1, 'name' => 'Student 1', 'mark' => '10'),
-				array('id' => 2, 'name' => 'Student 2', 'mark' => '4'),
-				array('id' => 3, 'name' => 'Student 3', 'mark' => '7')
-			),
-			'maxMark' => 10,
-			'todo' => array(
-				'TODO 1',
-				'TODO 2',
-				'TODO 3'
-			),
-			'over' => $overlookedMusters
+			'object' => $object,
+			'musters' => $musters,
+			'curator' => $curator
 		);
+		
+		$fileName = substr($object['name'], 0, 20);
 		$result = $templator->render($document, $values);
-		$result->download('Акт проверки.docx');
-
+		$result->download("$fileName.docx");
 	}
 	
 }

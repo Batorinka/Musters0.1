@@ -57,6 +57,20 @@ class QueryBuilder {
     
     return $result;
   }
+  public function getOneWhere($by_column, $id, $table)
+  {
+    $select = $this->queryFactory->newSelect();
+    $select->cols(['*'])
+      ->from($table)
+      ->where("$by_column = :$by_column")
+      ->bindValue("$by_column", $id);
+	
+    $sth = $this->pdo->prepare($select->getStatement());
+    $sth->execute($select->getBindValues());
+    $result = $sth->fetch(PDO::FETCH_ASSOC);
+    
+    return $result;
+  }
   
   public function insert($data, $table)
   {
