@@ -23,12 +23,18 @@ class DevicesController {
 	{
 		$devices = $this->qb->getAll('devices');
 		$musters = $this->qb->getAll('musters');
+		$types = $this->qb->getAll('types');
 		
 		foreach ($devices as &$device) {
 			$device['quantity_of_musters'] = 0;
 			foreach ($musters as $muster) {
 				if ($device['id'] == $muster['device_id']) {
 					$device['quantity_of_musters'] += 1;
+				}
+			}
+			foreach ($types as $type) {
+				if ($type['id'] == $device['type_id']) {
+					$device['type'] = $type['name'];
 				}
 			}
 		}
@@ -57,13 +63,17 @@ class DevicesController {
 	
 	public function addDeviceForm()
 	{
-		echo $this->templates->render('/devices/addDevice');
+		$types = $this->qb->getAll('types');
+		echo $this->templates->render('/devices/addDevice', [
+			'types' => $types
+		]);
 	}
 	
 	public function addDevice()
 	{
 		$this->qb->insert([
-			'name' => $_POST['name']
+			'name' => $_POST['name'],
+			'type_id' => $_POST['type_id']
 		], 'devices');
 		flash()->success("Добавлен новый прибор");
 		header('Location: /');
@@ -72,16 +82,19 @@ class DevicesController {
 	public function updateDeviceForm($vars)
 	{
 		$device = $this->qb->getOne($vars['id'], 'devices');
+		$types = $this->qb->getAll('types');
 		
 		echo $this->templates->render('/devices/updateDevice', [
-			'device' => $device
+			'device' => $device,
+			'types' => $types
 		]);
 	}
 	
 	public function updateDevice($vars)
 	{
 		$this->qb->update([
-			'name' => $_POST['name']
+			'name' => $_POST['name'],
+			'type_id' => $_POST['type_id']
 		], $vars['id'], 'devices');
 		flash()->success("Прибор отредактирован");
 		header('Location: /');

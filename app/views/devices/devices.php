@@ -1,9 +1,10 @@
-<?php $this->layout('layout', ['title' => 'Список приборов', 'col_md_n' => '5']) ?>
+<?php $this->layout('layout', ['title' => 'Список приборов', 'col_md_n' => '6']) ?>
 <a class="btn btn-primary"  href="/adddeviceform">Добавить прибор</a>
 <table id="dt" class="table">
   <thead>
     <tr>
 	  <th scope="col">Название прибора</th>
+	  <th scope="col">Тип прибора</th>
 	  <th scope="col">Количество поверок</th>
       <th scope="col" class="col-md-1"></th>
     </tr>
@@ -16,6 +17,7 @@
 			    <?= $device['name']; ?>
 			  </a>
 		  </td>
+		  <td><?= $device['type']; ?></td>
 		  <td><?= $device['quantity_of_musters']; ?></td>
 		  <td class="dropdown">
 			  <a href="#" class="dropdown-toggle btn btn-info" data-toggle="dropdown">
