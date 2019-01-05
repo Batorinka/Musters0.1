@@ -64,7 +64,6 @@ class QueryBuilder {
     $insert
         ->into($table)
         ->cols($data);
-     //d($insert->getStatement());die;
     $sth = $this->pdo->prepare($insert->getStatement());
     $sth->execute($insert->getBindValues());
   }
@@ -77,8 +76,6 @@ class QueryBuilder {
         ->cols($data)
         ->where('id = :id')
         ->bindValue('id', $id);
-//     d($update->getStatement());die;
-    
     $sth = $this->pdo->prepare($update->getStatement());
     $sth->execute($update->getBindValues());
   }

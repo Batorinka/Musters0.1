@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' => $device['name'], 'col_md_n' => '12']) ?>
+<?php $this->layout('layout', ['title' => "{$device['name']} - {$type['name']}", 'col_md_n' => '12']) ?>
 
 <h4>Поверки</h4>
 
