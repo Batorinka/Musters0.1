@@ -7,13 +7,9 @@ use DI\ContainerBuilder;
 use Delight\Auth\Auth;
 use League\Plates\Engine;
 use Aura\SqlQuery\QueryFactory;
-use Carbon\Carbon;
 use App\AppConfig;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-
-
 
 $containerBuilder = new ContainerBuilder;
 $containerBuilder->addDefinitions([
@@ -49,6 +45,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 		$r->addRoute('GET', '/updatemusterform/{id:\d+}', ['App\controllers\MustersController', 'updateMusterForm']);
 		$r->addRoute('POST', '/updatemuster/{id:\d+}', ['App\controllers\MustersController', 'updateMuster']);
 		$r->addRoute('GET', '/deletemuster/{id:\d+}', ['App\controllers\MustersController', 'deleteMuster']);
+		$r->addRoute('GET', '/overlooked', ['App\controllers\MustersController', 'getOverlooked']);
 		
 		$r->addRoute('GET', '/catalogues/objects', ['App\controllers\ObjectsController', 'getObjects']);
 		$r->addRoute('GET', '/object/{id:\d+}', ['App\controllers\ObjectsController', 'getObject']);
@@ -66,7 +63,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 		$r->addRoute('POST', '/updatedevice/{id:\d+}', ['App\controllers\DevicesController', 'updateDevice']);
 		$r->addRoute('GET', '/deletedevice/{id:\d+}', ['App\controllers\DevicesController', 'deleteDevice']);
 		
-		$r->addRoute('GET', '/overlooked', ['App\controllers\PagesController', 'getOverlooked']);
 		$r->addRoute('GET', '/404', ['App\controllers\PagesController', 'pageNotFound']);
 		$r->addRoute('GET', '/test', ['App\controllers\PagesController', 'test']);
 		$r->addRoute('POST', '/testAjax', ['App\controllers\PagesController', 'testAjax']);

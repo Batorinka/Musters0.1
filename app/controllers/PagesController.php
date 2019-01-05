@@ -18,33 +18,6 @@ class PagesController {
 		$this->templates = $engine;
 	}
 	
-	public function getOverlooked()
-	{
-		$musters = $this->qb->getAll('musters');
-		$objects = $this->qb->getAll('objects');
-		$devices = $this->qb->getAll('devices');
-		$overlookedMusters = [];
-		foreach ($musters as &$muster) {
-			$lastDate = Carbon::parse($muster['last_date']);
-			$nextDate = $lastDate->addYears($muster['interval_of_muster']);
-			$muster['is_overlooked'] = ($nextDate < Carbon::now()) ? 'overlooked' : '';
-			$muster['is_overlooked_in_month'] =
-				($nextDate >= Carbon::now()
-					and $nextDate < Carbon::now()->addMonth()) ? 'overlooked_in_month' : '';
-			$muster['next_date'] = $nextDate->format('Y-m-d');
-			if ($nextDate < Carbon::now()->addMonth()) {
-				array_push($overlookedMusters, $muster);
-			}
-		}
-		
-		echo $this->templates->render('overlooked', [
-			'musters' => $overlookedMusters,
-			'objects' => $objects,
-			'devices' => $devices
-		]);
-		return $overlookedMusters;
-	}
-	
 	public function pageNotFound()
 	{
 		echo $this->templates->render('404');

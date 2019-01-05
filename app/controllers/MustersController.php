@@ -4,16 +4,19 @@ namespace App\controllers;
 use App\QueryBuilder;
 use League\Plates\Engine;
 use Carbon\Carbon;
+use App\Helper;
 
 class MustersController
 {
 	private $templates;
 	private $qb;
+	private $helper;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine)
+	public function __construct(QueryBuilder $qb, Engine $engine, Helper $helper)
 	{
+		$this->qb        = $qb;
 		$this->templates = $engine;
-		$this->qb = $qb;
+		$this->helper    = $helper;
 	}
 	
 	public function getMusters()
@@ -32,18 +35,8 @@ class MustersController
 			}
 		}
 		
-		//с помощью карбон расчитывается дата следующей поверки
-		//  (last_date + interval_of_musters)
 		foreach ($musters as &$muster) {
-			$lastDate = Carbon::parse($muster['last_date']);
-			$nextDate = $lastDate->addYears($muster['interval_of_muster']);
-			//is_overlooked - содержит css класс отображающий просроченные поверки
-			// или поверки, которые будут просрочены в течение месяца
-			$muster['is_overlooked'] = ($nextDate < Carbon::now()) ? 'overlooked' : '';
-			$muster['is_overlooked_in_month'] =
-				($nextDate >= Carbon::now()
-					and $nextDate < Carbon::now()->addMonth()) ? 'overlooked_in_month' : '';
-			$muster['next_date'] = $nextDate->format('Y-m-d');
+			$muster = $this->helper->addCSSClassAndNextDate($muster);
 		}
 		echo $this->templates->render('/musters/musters', [
 			'musters' => $musters,
@@ -113,5 +106,26 @@ class MustersController
 		
 		flash()->success("Поверка удалена");
 		header('Location: /');
+	}
+	
+	public function getOverlooked()
+	{
+		$musters = $this->qb->getAll('musters');
+		$objects = $this->qb->getAll('objects');
+		$devices = $this->qb->getAll('devices');
+		$overlookedMusters = [];
+		foreach ($musters as &$muster) {
+			$muster = $this->helper->addCSSClassAndNextDate($muster);
+			if ($muster['next_date'] < Carbon::now()->addMonth()) {
+				array_push($overlookedMusters, $muster);
+			}
+		}
+		
+		echo $this->templates->render('overlooked', [
+			'musters' => $overlookedMusters,
+			'objects' => $objects,
+			'devices' => $devices
+		]);
+		return $overlookedMusters;
 	}
 }

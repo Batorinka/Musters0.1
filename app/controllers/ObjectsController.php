@@ -4,16 +4,19 @@ namespace App\controllers;
 use App\QueryBuilder;
 use League\Plates\Engine;
 use Carbon\Carbon;
+use App\Helper;
 
 class ObjectsController {
 	
 	private $templates;
 	private $qb;
+	private $helper;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine)
+	public function __construct(QueryBuilder $qb, Engine $engine, Helper $helper)
 	{
-		$this->qb = $qb;
+		$this->qb        = $qb;
 		$this->templates = $engine;
+		$this->helper    = $helper;
 	}
 	
 	public function getObjects()
@@ -32,13 +35,7 @@ class ObjectsController {
 		$devices = $this->qb->getAll('devices');
 		
 		foreach ($musters as &$muster) {
-			$lastDate = Carbon::parse($muster['last_date']);
-			$nextDate = $lastDate->addYears($muster['interval_of_muster']);
-			$muster['is_overlooked'] = ($nextDate < Carbon::now()) ? 'overlooked' : '';
-			$muster['is_overlooked_in_month'] =
-				($nextDate >= Carbon::now()
-					and $nextDate < Carbon::now()->addMonth()) ? 'overlooked_in_month' : '';
-			$muster['next_date'] = $nextDate->format('Y-m-d');
+			$muster = $this->helper->addCSSClassAndNextDate($muster);
 		}
 		
 		echo $this->templates->render('/objects/object', [
