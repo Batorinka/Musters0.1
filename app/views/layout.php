@@ -30,7 +30,8 @@
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Справочники<span class="caret"></span></a>
 				  <ul class="dropdown-menu">
-					  <li><a href="/catalogues/objects">Предприятия</a></li>
+					  <li><a href="/catalogues/companies">Предприятия</a></li>
+					  <li><a href="/catalogues/objects">Объекты</a></li>
 					  <li><a href="/catalogues/devices">Приборы</a></li>
 				  </ul>
 				</li>
@@ -46,7 +47,9 @@
 					</ul>
 				</li>
 				<?php endif;?>
-				<li><a class="btn btn-primary"  href="/addmusterform"><span class="btn-plus glyphicon glyphicon-plus"></span></a></li>
+				<li><a class="btn btn-primary" href="/addmusterform" target="_blank">
+						<span class="btn-plus glyphicon glyphicon-plus"></span>
+					</a></li>
 			</ul>
 		</div>
 	</div>

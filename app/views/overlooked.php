@@ -16,23 +16,24 @@
 	  <tr>
 		  <td>
 			  <a href="/object/<?= $muster['object_id'] ?>">
-				  <?= $objects[
-				  array_search(
-					  $muster['object_id'],
-					  array_column($objects, 'id')
-				  )
-				  ]['name']; ?>
+				  <?foreach ($objects as $object): ?>
+					<?if ($object['id'] == $muster['object_id']): ?>
+					  <?foreach ($companies as $company) :?>
+						  <?= ($company['id'] == $object['company_id'])
+								  ? $company['name_sub'] : ''?>
+					  <?endforeach;?>
+					  (<?= $object['name']; ?>)
+					<?endif;?>
+				  <?endforeach;?>
 			  </a>
 		  </td>
-	
 		  <td>
 			  <a href="/device/<?= $muster['device_id'] ?>">
-				  <?= $devices[
-				  array_search(
-					  $muster['device_id'],
-					  array_column($devices, 'id')
-				  )
-				  ]['name']; ?>
+				  <?foreach ($devices as $device): ?>
+					  <?if ($device['id'] == $muster['device_id']): ?>
+						  <?= $device['name']; ?>
+					  <?endif;?>
+				  <?endforeach;?>
 			  </a>
 		  </td>
 		  <td>

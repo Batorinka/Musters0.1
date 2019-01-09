@@ -47,6 +47,14 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 		$r->addRoute('GET', '/deletemuster/{id:\d+}', ['App\controllers\MustersController', 'deleteMuster']);
 		$r->addRoute('GET', '/overlooked', ['App\controllers\MustersController', 'getOverlooked']);
 		
+		$r->addRoute('GET', '/catalogues/companies', ['App\controllers\CompaniesController', 'getCompanies']);
+		$r->addRoute('GET', '/company/{id:\d+}', ['App\controllers\CompaniesController', 'getCompany']);
+		$r->addRoute('GET', '/addcompanyform', ['App\controllers\CompaniesController', 'addCompanyForm']);
+		$r->addRoute('POST', '/addcompany', ['App\controllers\CompaniesController', 'addCompany']);
+		$r->addRoute('GET', '/updatecompanyform/{id:\d+}', ['App\controllers\CompaniesController', 'updateCompanyForm']);
+		$r->addRoute('POST', '/updatecompany/{id:\d+}', ['App\controllers\CompaniesController', 'updateCompany']);
+		$r->addRoute('GET', '/deletecompany/{id:\d+}', ['App\controllers\CompaniesController', 'deleteCompany']);
+		
 		$r->addRoute('GET', '/catalogues/objects', ['App\controllers\ObjectsController', 'getObjects']);
 		$r->addRoute('GET', '/object/{id:\d+}', ['App\controllers\ObjectsController', 'getObject']);
 		$r->addRoute('GET', '/addobjectform', ['App\controllers\ObjectsController', 'addObjectForm']);

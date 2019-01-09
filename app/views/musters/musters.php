@@ -16,7 +16,10 @@
 	  <tr>
 	  <td rowspan="<?= $object['quantity_of_musters']; ?>">
 		  <a href="/object/<?= $object['id'] ?>">
-		    <?= $object['name']; ?>
+			  <?foreach ($companies as $company) :?>
+				  <?= ($company['id'] == $object['company_id']) ? $company['name_sub'] : ''?>
+			  <?endforeach;?>
+		    (<?= $object['name']; ?>)
 		  </a>
 	  </td>
 	

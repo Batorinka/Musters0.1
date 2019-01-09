@@ -11,7 +11,6 @@ class PagesController {
 	
 	private $qb;
 	private $templates;
-	private $auth;
 	
 	public function __construct(QueryBuilder $qb, Engine $engine)
 	{

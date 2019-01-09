@@ -24,6 +24,7 @@ class MustersController
 		$musters = $this->qb->getAll('musters');
 		$devices = $this->qb->getAll('devices');
 		$objects = $this->qb->getAll('objects');
+		$companies = $this->qb->getAll('companies');
 		
 		//Подсчет колличества поверок для каждого объекта
 		foreach ($objects as &$object) {
@@ -41,16 +42,19 @@ class MustersController
 		echo $this->templates->render('/musters/musters', [
 			'musters' => $musters,
 			'objects' => $objects,
-			'devices' => $devices
+			'devices' => $devices,
+			'companies' => $companies
 		]);
 	}
 	
 	public function addMusterForm()
 	{
 		$objects = $this->qb->getAll('objects');
+		$companies = $this->qb->getAll('companies');
 		$devices = $this->qb->getAll('devices');
 		echo $this->templates->render('/musters/addMuster', [
 			'objects' => $objects,
+			'companies' => $companies,
 			'devices' => $devices
 		]);
 	}
@@ -77,11 +81,13 @@ class MustersController
 	{
 		$muster = $this->qb->getOne($vars['id'], 'musters');
 		$objects = $this->qb->getAll('objects');
+		$companies = $this->qb->getAll('companies');
 		$devices = $this->qb->getAll('devices');
 		
 		echo $this->templates->render('/musters/updateMuster', [
 			'muster' => $muster,
 			'objects' => $objects,
+			'companies' => $companies,
 			'devices' => $devices
 		]);
 	}
@@ -113,6 +119,7 @@ class MustersController
 		$musters = $this->qb->getAll('musters');
 		$objects = $this->qb->getAll('objects');
 		$devices = $this->qb->getAll('devices');
+		$companies = $this->qb->getAll('companies');
 		$overlookedMusters = [];
 		foreach ($musters as &$muster) {
 			$muster = $this->helper->addCSSClassAndNextDate($muster);
@@ -124,7 +131,8 @@ class MustersController
 		echo $this->templates->render('overlooked', [
 			'musters' => $overlookedMusters,
 			'objects' => $objects,
-			'devices' => $devices
+			'devices' => $devices,
+			'companies' => $companies
 		]);
 		return $overlookedMusters;
 	}

@@ -45,7 +45,7 @@
 					<span class="glyphicon glyphicon-cog"></span>
 				</a>
 				<ul class="dropdown-menu dropdown-menu-right">
-					<li><a href="/updatemusterform/<?=$muster['id'];?>">Редактировать</a></li>
+					<li><a href="/updatemusterform/<?=$muster['id'];?>" target="_blank">Редактировать</a></li>
 					<li><a href="/deletemuster/<?=$muster['id'];?>"
 					onclick="return confirm('Вы уверенны?')">Удалить</a></li>
 				</ul>

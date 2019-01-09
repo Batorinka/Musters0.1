@@ -24,7 +24,7 @@
 				  <span class="glyphicon glyphicon-cog"></span>
 			  </a>
 			  <ul class="dropdown-menu dropdown-menu-right">
-				  <li><a href="/updatedeviceform/<?=$device['id'];?>">Редактировать</a></li>
+				  <li><a href="/updatedeviceform/<?=$device['id'];?>" target="_blank">Редактировать</a></li>
 				  <li><a href="/deletedevice/<?=$device['id'];?>"
 				         onclick="return confirm('Вы уверенны?')">Удалить</a></li>
 			  </ul>

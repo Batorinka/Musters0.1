@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' => 'Редактировать поверку', 'col_md_n' => '6']) ?>
+<?php $this->layout('layout', ['title' => 'Редактировать поверку', 'col_md_n' => '8']) ?>
 
 
 <form action="/updatemuster/<?=$muster['id'];?>" method="post">
@@ -6,12 +6,17 @@
 		<label for="object_name">Название предприятия</label><br>
 		<select class="js-example-basic-single" name="object_id">
 			<?php foreach ($objects as $object): ?>
-				<option value="<?= $object['id']?>"
-					<?= ($object['id'] == $muster['object_id']) ? 'selected':''?>
-				><?= $object['name']?></option>
+				<?php foreach ($companies as $company): ?>
+					<?if ($company['id'] == $object['company_id']) :?>
+						<option value="<?= $object['id']?>"
+							<?= ($object['id'] == $muster['object_id']) ? 'selected':''?>>
+							<?="{$company['name_sub']} ({$object['name']})"?>
+						</option>
+					<?endif;?>
+				<?php endforeach; ?>
 			<?php endforeach; ?>
 		</select>
-		<a class="btn btn-primary"  href="/addobjectform">
+		<a class="btn btn-primary" href="/addobjectform" target="_blank">
 			<span class="glyphicon glyphicon-plus"></span>
 		</a>
 	</div>
@@ -24,7 +29,7 @@
 				><?= $device['name']?></option>
 			<?php endforeach; ?>
 		</select>
-		<a class="btn btn-primary"  href="/adddeviceform">
+		<a class="btn btn-primary" href="/adddeviceform" target="_blank">
 			<span class="glyphicon glyphicon-plus"></span>
 		</a>
 	</div>

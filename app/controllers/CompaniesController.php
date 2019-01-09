@@ -3,10 +3,9 @@ namespace App\controllers;
 
 use App\QueryBuilder;
 use League\Plates\Engine;
-use Carbon\Carbon;
 use App\Helper;
 
-class ObjectsController {
+class CompaniesController {
 	
 	private $templates;
 	private $qb;
@@ -19,13 +18,21 @@ class ObjectsController {
 		$this->helper    = $helper;
 	}
 	
-	public function getObjects()
+	public function getCompanies()
 	{
-		$objects = $this->qb->getAll('objects');
 		$companies = $this->qb->getAll('companies');
+		$objects = $this->qb->getAll('objects');
 		
-		echo $this->templates->render('/objects/objects', [
-			'objects' => $objects,
+		foreach ($companies as &$company) {
+			$company['quantity_of_objects'] = 0;
+			foreach ($objects as $object) {
+				if ($company['id'] == $object['company_id']) {
+					$company['quantity_of_objects'] += 1;
+				}
+			}
+		}
+		
+		echo $this->templates->render('/companies/companies', [
 			'companies' => $companies
 		]);
 	}
@@ -33,7 +40,6 @@ class ObjectsController {
 	public function getObject($vars)
 	{
 		$object = $this->qb->getOne($vars['id'], 'objects');
-		$company = $this->qb->getOne($object['company_id'], 'companies');
 		$musters = $this->qb->getAllWhere('object_id', $vars['id'],'musters');
 		$devices = $this->qb->getAll('devices');
 		
@@ -43,7 +49,6 @@ class ObjectsController {
 		
 		echo $this->templates->render('/objects/object', [
 			'object' => $object,
-			'company' => $company,
 			'musters' => $musters,
 			'devices' => $devices,
 		]);
@@ -51,17 +56,13 @@ class ObjectsController {
 	
 	public function addObjectForm()
 	{
-		$companies = $this->qb->getAll('companies');
-		echo $this->templates->render('/objects/addObject', [
-			'companies' => $companies
-		]);
+		echo $this->templates->render('/objects/addObject');
 	}
 	
 	public function addObject()
 	{
 		$this->qb->insert([
 			'name' => $_POST['name'],
-			'company_id' => $_POST['company_id'],
 			'email' => $_POST['email']
 		], 'objects');
 		flash()->success("Добавлен новый объект");
@@ -71,11 +72,9 @@ class ObjectsController {
 	public function updateObjectForm($vars)
 	{
 		$object = $this->qb->getOne($vars['id'], 'objects');
-		$companies = $this->qb->getAll('companies');
 		
 		echo $this->templates->render('/objects/updateObject', [
-			'object' => $object,
-			'companies' => $companies
+			'object' => $object
 		]);
 	}
 	
@@ -83,7 +82,6 @@ class ObjectsController {
 	{
 		$this->qb->update([
 			'name' => $_POST['name'],
-			'company_id' => $_POST['company_id'],
 			'email' => $_POST['email']
 		], $vars['id'], 'objects');
 		flash()->success("Объект отредактирован");
