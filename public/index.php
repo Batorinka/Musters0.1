@@ -7,9 +7,12 @@ use DI\ContainerBuilder;
 use Delight\Auth\Auth;
 use League\Plates\Engine;
 use Aura\SqlQuery\QueryFactory;
-use App\AppConfig;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::create(__DIR__);
+$dotenv->load();
 
 $containerBuilder = new ContainerBuilder;
 $containerBuilder->addDefinitions([
@@ -17,13 +20,11 @@ $containerBuilder->addDefinitions([
 	return new PHPMailer(true);
   },
   PDO::class => function() {
-    $appConfig = new AppConfig;
-    $config = $appConfig->db();
-
-    return new PDO("{$config['driver']}:host={$config['host']};
-                            dbname={$config['database_name']};
-                            charset={$config['charset']};",
-	                        $config['username'], $config['password']);
+    return new PDO(getenv('DRIVER').":host=".getenv('DATABASE_HOST').";
+                            dbname=".getenv('DATABASE_NAME').";
+                            charset=".getenv('CHARSET').";",
+	                          getenv('DATABASE_USERNAME'),
+	                          getenv('DATABASE_PASSWORD'));
   },
   Engine::class => function() {
     return new Engine("../app/views");

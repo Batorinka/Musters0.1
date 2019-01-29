@@ -16,33 +16,30 @@ class MailController {
 	private $auth;
 	private $qb;
 	private $carbon;
-	private $appConfig;
 	private $mail;
 	
-	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon, AppConfig $appConfig, PHPMailer $mail)
+	public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth, Carbon $carbon, PHPMailer $mail)
 	{
 		$this->templates = $engine;
 		$this->auth = $auth;
 		$this->qb = $qb;
 		$this->carbon = $carbon;
-		$this->appConfig = $appConfig;
 		$this->mail = $mail;
 	}
 	
 	public function sendMail()
 	{
 		$musters = $this->qb->getAll('musters');
-		$config = $this->appConfig->mail();
 		try {
 			//Server settings
 			$this->mail->SMTPDebug = 2;
 			$this->mail->isSMTP();
-			$this->mail->Host = $config['Host'];
+			$this->mail->Host = getenv('HOST');
 			$this->mail->SMTPAuth = true;
-			$this->mail->Username = $config['Username'];
-			$this->mail->Password = $config['Password'];
-			$this->mail->SMTPSecure = $config['SMTPSecure'];
-			$this->mail->Port = $config['Port'];
+			$this->mail->Username = getenv('USERNAME');
+			$this->mail->Password = getenv('PASSWORD');
+			$this->mail->SMTPSecure = getenv('SMTPSECURE');
+			$this->mail->Port = getenv('PORT');
 			$this->mail->CharSet = 'utf-8';
 			//Recipients
 			$this->mail->setFrom('kirillpechkin@yandex.ru', 'Musters');
