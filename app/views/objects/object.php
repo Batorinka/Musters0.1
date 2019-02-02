@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' =>"{$company['name_sub']} - {$object['name']}", 'col_md_n' => '12']) ?>
+<?php $this->layout('layout', ['title' =>"{$object['company_name']} - {$object['name']}", 'col_md_n' => '12']) ?>
 
 <h4>Поверки</h4>
 
@@ -19,12 +19,7 @@
 		<?php foreach($musters as $muster): ?>
 			<td>
 				<a href="/device/<?= $muster['device_id'] ?>">
-					<?= $devices[
-					array_search(
-						$muster['device_id'],
-						array_column($devices, 'id')
-					)
-					]['name']; ?>
+					<?= $muster['device_name'] ?>
 				</a>
 			</td>
 			<td>

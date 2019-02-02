@@ -32,20 +32,12 @@ class ObjectsController {
 	
 	public function getObject($vars)
 	{
-		$object = $this->qb->getOne($vars['id'], 'objects');
-		$company = $this->qb->getOne($object['company_id'], 'companies');
-		$musters = $this->qb->getAllWhere('object_id', $vars['id'],'musters');
-		$devices = $this->qb->getAll('devices');
-		
-		foreach ($musters as &$muster) {
-			$muster = $this->helper->addCSSClassAndNextDate($muster);
-		}
-		
+		$object = $this->qb->getObjectsWhere('objects.id', $vars['id']);
+		$musters = $this->helper->addCSSClassAndNextDate($this->qb->getMustersWhere('object_id', $vars['id']));
+//		d($object);die();
 		echo $this->templates->render('/objects/object', [
-			'object' => $object,
-			'company' => $company,
-			'musters' => $musters,
-			'devices' => $devices,
+			'object' => $object[0],
+			'musters' => $musters
 		]);
 	}
 	

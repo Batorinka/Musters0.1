@@ -47,13 +47,13 @@ class DevicesController {
 	public function getDevice($vars)
 	{
 		$device = $this->qb->getOne($vars['id'], 'devices');
-		$musters = $this->qb->getAllWhere('device_id', $vars['id'],'musters');
-		$objects = $this->qb->getAll('objects');
+		$musters = $this->helper->addCSSClassAndNextDate(
+			$this->qb->getMustersWhere('device_id', $vars['id'])
+		);
+		$objects = $this->qb->getObjects();
 		$type = $this->qb->getOneWhere('id', $device['type_id'],'types');
 		
-		foreach ($musters as &$muster) {
-			$muster = $this->helper->addCSSClassAndNextDate($muster);
-		}
+
 //		d($type, $device);die();
 		echo $this->templates->render('/devices/device', [
 			'device' => $device,

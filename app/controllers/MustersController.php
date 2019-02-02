@@ -21,29 +21,13 @@ class MustersController
 	
 	public function getMusters()
 	{
-		$musters = $this->qb->getAll('musters');
-		$devices = $this->qb->getAll('devices');
-		$objects = $this->qb->getAll('objects');
-		$companies = $this->qb->getAll('companies');
-		
-		//Подсчет колличества поверок для каждого объекта
-		foreach ($objects as &$object) {
-			$object['quantity_of_musters'] = 0;
-			foreach ($musters as $muster) {
-				if ($object['id'] == $muster['object_id']) {
-					$object['quantity_of_musters'] += 1;
-				}
-			}
-		}
-		
-		foreach ($musters as &$muster) {
-			$muster = $this->helper->addCSSClassAndNextDate($muster);
-		}
+		$musters = $this->helper->addCSSClassAndNextDate($this->qb->getMusters());
+		$objects = $this->helper->countMusters($musters, $this->qb->getObjects());
+
 		echo $this->templates->render('/musters/musters', [
+			'title'   => 'Поверки',
 			'musters' => $musters,
-			'objects' => $objects,
-			'devices' => $devices,
-			'companies' => $companies
+			'objects' => $objects
 		]);
 	}
 	
@@ -116,24 +100,18 @@ class MustersController
 	
 	public function getOverlooked()
 	{
-		$musters = $this->qb->getAll('musters');
-		$objects = $this->qb->getAll('objects');
-		$devices = $this->qb->getAll('devices');
-		$companies = $this->qb->getAll('companies');
+		$musters = $this->helper->addCSSClassAndNextDate($this->qb->getMusters());
 		$overlookedMusters = [];
 		foreach ($musters as &$muster) {
-			$muster = $this->helper->addCSSClassAndNextDate($muster);
 			if ($muster['next_date'] < Carbon::now()->addMonth()) {
 				array_push($overlookedMusters, $muster);
 			}
 		}
-		
-		echo $this->templates->render('overlooked', [
+		$objects = $this->helper->countMusters($overlookedMusters, $this->qb->getObjects());
+		echo $this->templates->render('musters/musters', [
+			'title'   => 'Просроченные поверки',
 			'musters' => $overlookedMusters,
-			'objects' => $objects,
-			'devices' => $devices,
-			'companies' => $companies
+			'objects' => $objects
 		]);
-		return $overlookedMusters;
 	}
 }

@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' => 'Поверки', 'col_md_n' => '12']) ?>
+<?php $this->layout('layout', ['title' => $title, 'col_md_n' => '12']) ?>
 
 <table class="table table-bordered">
   <thead>
@@ -12,46 +12,41 @@
     </tr>
   </thead>
   <tbody>
-	<?php foreach ($objects as $object): ?>
-	  <tr>
-	  <td rowspan="<?= $object['quantity_of_musters']; ?>">
-		  <a href="/object/<?= $object['id'] ?>">
-			  <?foreach ($companies as $company) :?>
-				  <?= ($company['id'] == $object['company_id']) ? $company['name_sub'] : ''?>
-			  <?endforeach;?>
-		    (<?= $object['name']; ?>)
-		  </a>
-	  </td>
-	
-	  <?php foreach($musters as $muster): ?>
-		  <?php if ($muster['object_id'] == $object['id']): ?>
-			  <td>
-				  <a href="/device/<?= $muster['device_id'] ?>">
-					  <?= $devices[
-					  array_search(
-						  $muster['device_id'],
-						  array_column($devices, 'id')
-					  )
-					  ]['name']; ?>
-				  </a>
-			  </td>
-			  <td>
-				  <?= $muster['number'] ?>
-			  </td>
-			  <td>
-				  <?= $muster['last_date'] ?>
-			  </td>
-			  <td>
-				  <?= $muster['interval_of_muster'] ?>
-			  </td>
-			  <td class="<?= $muster['is_overlooked'] ?>
-<?= $muster['is_overlooked_in_month'] ?>">
-				  <?= $muster['next_date'] ?>
-			  </td>
-			  </tr>
-		  <?php endif; ?>
-	  <?php endforeach; ?>
-	
-	<?php endforeach; ?>
+  <?foreach ($objects as $object):?>
+    <?if ($object['count_musters'] != 0):?>
+      <tr>
+          <td rowspan="<?= $object['count_musters']; ?>">
+
+              <a href="/object/<?= $object['id'] ?>">
+                  <?= "{$object['company_name']} ({$object['name']})"; ?>
+              </a>
+          </td>
+          <?foreach ($musters as $muster):?>
+            <?if ($muster['object_id'] == $object['id']): ?>
+              <td>
+                  <a href="/device/<?= $muster['device_id'] ?>">
+                      <?= $muster['device_name']; ?>
+                  </a>
+              </td>
+              <td>
+                  <?= $muster['number'] ?>
+              </td>
+              <td>
+                  <?= $muster['last_date'] ?>
+              </td>
+              <td>
+                  <?= $muster['interval_of_muster'] ?>
+              </td>
+              <td class="<?= $muster['is_overlooked'] ?>
+    <?= $muster['is_overlooked_in_month'] ?>">
+                  <?= $muster['next_date'] ?>
+              </td>
+              </tr>
+            <?endif;?>
+          <?endforeach;?>
+      </tr>
+    <?endif;?>
+  <?endforeach;?>
   </tbody>
 </table>
+<p>Колличество поверок: <?=count($musters)?></p>

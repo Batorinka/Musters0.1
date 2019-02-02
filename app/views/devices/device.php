@@ -19,12 +19,11 @@
 		<?php foreach($musters as $muster): ?>
 			<td>
 				<a href="/object/<?= $muster['object_id'] ?>">
-					<?= $objects[
-					array_search(
-						$muster['object_id'],
-						array_column($objects, 'id')
-					)
-					]['name']; ?>
+					<?foreach ($objects as $object): ?>
+                        <?if ($object['id'] == $muster['object_id']): ?>
+                            <?= "{$object['company_name']} ({$object['name']})"; ?>
+                        <?endif;?>
+                    <?endforeach;?>
 				</a>
 			</td>
 			<td>
