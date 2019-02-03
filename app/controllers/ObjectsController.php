@@ -21,7 +21,7 @@ class ObjectsController {
 	
 	public function getObjects()
 	{
-		$objects = $this->qb->getAll('objects');
+		$objects = $this->qb->getObjects();
 		$companies = $this->qb->getAll('companies');
 		
 		echo $this->templates->render('/objects/objects', [
@@ -53,8 +53,7 @@ class ObjectsController {
 	{
 		$this->qb->insert([
 			'name' => $_POST['name'],
-			'company_id' => $_POST['company_id'],
-			'email' => $_POST['email']
+			'company_id' => $_POST['company_id']
 		], 'objects');
 		flash()->success("Добавлен новый объект");
 		header('Location: /');
@@ -75,8 +74,7 @@ class ObjectsController {
 	{
 		$this->qb->update([
 			'name' => $_POST['name'],
-			'company_id' => $_POST['company_id'],
-			'email' => $_POST['email']
+			'company_id' => $_POST['company_id']
 		], $vars['id'], 'objects');
 		flash()->success("Объект отредактирован");
 		header('Location: /');

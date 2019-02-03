@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' => 'Список предприятий', 'col_md_n' => '6']) ?>
+<?php $this->layout('layout', ['title' => 'Список предприятий', 'col_md_n' => '5']) ?>
 <a class="btn btn-primary"  href="/addcompanyform">Добавить предприятие</a>
 <table id="dt" class="table">
   <thead>
@@ -24,8 +24,8 @@
 				  <span class="glyphicon glyphicon-cog"></span>
 			  </a>
 			  <ul class="dropdown-menu dropdown-menu-right">
-				  <li><a href="/updateobjectform/<?=$company['id'];?>">Редактировать</a></li>
-				  <li><a href="/deleteobject/<?=$company['id'];?>"
+				  <li><a href="/updatecompanyform/<?=$company['id'];?>">Редактировать</a></li>
+				  <li><a href="/deletecompany/<?=$company['id'];?>"
 				         onclick="return confirm('Вы уверенны?')">Удалить</a></li>
 			  </ul>
 		  </td>

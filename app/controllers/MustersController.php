@@ -78,12 +78,16 @@ class MustersController
 	
 	public function updateMuster($vars)
 	{
+		$number = ($_POST['number'] == 0) ? '1' : $_POST['number'];
+		$last_date = ($_POST['last_date'] == 0) ? Carbon::now()->format('Y-m-d') : $_POST['last_date'];
+		$interval_of_muster = ($_POST['interval_of_muster'] == 0) ? '0' : $_POST['interval_of_muster'];
+
 		$this->qb->update([
 			'object_id' => $_POST['object_id'],
 			'device_id' => $_POST['device_id'],
-			'number' => $_POST['number'],
-			'last_date' => $_POST['last_date'],
-			'interval_of_muster' => $_POST['interval_of_muster']
+			'number' => $number,
+			'last_date' => $last_date,
+			'interval_of_muster' => $interval_of_muster
 		], $vars['id'], 'musters');
 		
 		flash()->success("Поверка отредактирована");

@@ -17,8 +17,8 @@
 		<input type="text" name="name" class="form-control" placeholder="Введите название объекта">
 	</div>
 	<div class="form-group">
-		<label for="email">Адрес электронной почты для рассылки</label>
-		<input type="text" name="email" class="form-control" placeholder="Введите email">
+		<label for="email">Адрес объекта</label>
+		<input type="text" name="address" class="form-control" placeholder="Введите адрес объекта">
 	</div>
 	<button type="submit" class="btn btn-primary">Сохранить</button>
 </form>

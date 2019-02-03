@@ -21,8 +21,7 @@ class QueryBuilder {
 		$select->cols([
 			'objects.id',
 			'name',
-			'companies.name_sub AS company_name',
-			'email'])
+			'companies.name_sub AS company_name'])
 			->from('objects')
 			->orderBy(['companies.name_sub'])
 			->join(
@@ -45,8 +44,7 @@ class QueryBuilder {
 		$select->cols([
 			'objects.id',
 			'name',
-			'companies.name_sub AS company_name',
-			'email'])
+			'companies.name_sub AS company_name'])
 			->from('objects')
 			->orderBy(['companies.name_sub'])
 			->join(
